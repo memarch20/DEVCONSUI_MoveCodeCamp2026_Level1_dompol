@@ -570,6 +570,8 @@ All commands below are run in the **VS Code terminal** (except Step 1 which uses
 | Stage all changes | `git add .` |
 | Commit changes | `git commit -m "your message"` |
 | Push to GitHub | `git push origin main` |
+| Show wallet mnemonic (private key) | `sui keytool export --key-identity <ALIAS>` |
+| List all key aliases | `sui keytool list` |
 
 ---
 

@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
+import { MAINNET_PORTFOLIO_ID } from "../constants"
 
 // ============================================================================
 // CUSTOM HOOK FOR DYNAMIC META TAGS
@@ -98,7 +99,7 @@ const PortfolioView = () => {
   // ==========================================================================
   // STATE MANAGEMENT
   // ==========================================================================
-  const objectId = "0xa3343391df96e28464499f4c209d51bf209c07392fdeea97bfeee59e7550f020";
+  const objectId = MAINNET_PORTFOLIO_ID;
   
   // Network state - default to testnet, can be changed if needed
   const [currentNetwork, setCurrentNetwork] = useState<"testnet" | "mainnet">("mainnet");
@@ -112,13 +113,13 @@ const PortfolioView = () => {
   // DYNAMIC META TAGS
   // ==========================================================================
   // Generate dynamic meta data based on portfolio
-  const metaData = {
-  title: `${portfolioData.name} | Sui Move Smart Contract Portfolio`,
-  description: `${portfolioData.about.substring(0, 150)}...`,
-  image: `${window.location.origin}/meta-devcon-sui.png`, // Changed to meta-devcon-sui.png
-  url: window.location.href,
-  keywords: `Sui Move, ${portfolioData.skills.join(', ')}, blockchain, ${portfolioData.course}, ${portfolioData.school}, smart contracts`
-};
+  const metaData = useMemo(() => ({
+    title: `${portfolioData.name} | Sui Move Smart Contract Portfolio`,
+    description: `${portfolioData.about.substring(0, 150)}...`,
+    image: `${window.location.origin}/meta-devcon-sui.png`,
+    url: window.location.href,
+    keywords: `Sui Move, ${portfolioData.skills.join(', ')}, blockchain, ${portfolioData.course}, ${portfolioData.school}, smart contracts`
+  }), [portfolioData]);
 
   // Apply the meta tags
   useMetaTags(metaData);
@@ -193,7 +194,6 @@ const PortfolioView = () => {
           throw new Error("No data returned from blockchain");
         }
       } catch (err) {
-        console.log("Using default data. Blockchain fetch failed:", err);
         setError(`Note: Using default data (blockchain fetch failed: ${err instanceof Error ? err.message : 'Unknown error'})`);
       } finally {
         setIsLoading(false);
@@ -207,11 +207,6 @@ const PortfolioView = () => {
   const truncateTxId = (txId: string) => {
     if (txId.length <= 10) return txId;
     return `${txId.slice(0, 8)}...${txId.slice(-4)}`;
-  };
-
-  // Network toggle handler (optional - you can remove if you don't need network switching)
-  const toggleNetwork = () => {
-    setCurrentNetwork(prev => prev === "testnet" ? "mainnet" : "testnet");
   };
 
   // ==========================================================================
@@ -262,6 +257,14 @@ const PortfolioView = () => {
               src="/profile.png"
               alt={portfolioData.name}
               crossOrigin="anonymous"
+              onError={(e) => {
+                const img = e.currentTarget;
+                const fallbacks = ['/profile.webp', '/profile.jpg', '/profile.jpeg'];
+                const currentSrc = img.src.split('/').pop() ?? '';
+                const nextIndex = fallbacks.findIndex(f => currentSrc.endsWith(f.replace('/', '')));
+                const next = nextIndex === -1 ? fallbacks[0] : fallbacks[nextIndex + 1];
+                if (next) img.src = next;
+              }}
               style={{
                 border: "none",
                 opacity: 1
@@ -321,12 +324,12 @@ const PortfolioView = () => {
         <div className="move-card">
           <div className="move-title">
             <img src="/sui-logo.png" alt="Move Logo" className="move-logo" />
-            <strong>About Move Smart Contracts</strong>
+            <strong>About Sui Move Smart Contracts</strong>
           </div>
 
           {/* Educational Content about Move Language */}
           <p>
-            Sui is a high-performance Layer 1 blockchain engineered for industry-leading speed and horizontal scalability. Headquartered in Silicon Valley (Palo Alto, California), the network was built by Mysten Labs—a team founded by the original creators of the Move language with roots at Facebook (Meta) and the Diem project. By utilizing a unique object-centric data model and the secure Move programming language, Sui provides a robust infrastructure that slashes the Web3 learning curve. This foundation allows developers to manage assets with enhanced security and build scalable applications that can redefine the future of the internet.
+            Sui is a high-performance blockchain delivering the full stack for a new global economy.  Founded by the core team behind Meta’s stablecoin initiative and powered by an object-centric model, Sui makes assets, permissions, and user data programmable and ownable. Move is a secure and efficient smart contract programming language designed to enable safer logic, rich composability, and scalable design.
           </p>
 
           {/* External Link to Official Sui Documentation */}

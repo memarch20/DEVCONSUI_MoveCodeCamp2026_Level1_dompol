@@ -61,7 +61,6 @@ module portfolio::portfolio {
     }
 
     public fun create_portfolio(
-        sender: address,
         name: String,
         course: String,
         school: String,
@@ -81,6 +80,6 @@ module portfolio::portfolio {
             github_url,
             skills,
         };
-        transfer::transfer(portfolio, sender);
+        transfer::transfer(portfolio, tx_context::sender(ctx));
     }
 }

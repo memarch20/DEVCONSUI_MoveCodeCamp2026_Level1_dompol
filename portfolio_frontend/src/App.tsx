@@ -1,7 +1,6 @@
-import { ConnectButton, useCurrentAccount, useSuiClientQuery } from "@mysten/dapp-kit";
+import { useCurrentAccount, useSuiClientQuery } from "@mysten/dapp-kit";
 import { ToastContainer } from "react-toastify";
 import PortfolioView from "./views/PortfolioView";
-import { useEffect } from "react";
 import "./App.css";
 
 function App() {
@@ -18,19 +17,6 @@ function App() {
     if (!balanceData) return "0.00";
     return (Number(balanceData.totalBalance) / 1_000_000_000).toFixed(2);
   };
-
-  // Suppress wallet console errors/toasts
-  useEffect(() => {
-    const originalConsoleError = console.error;
-    console.error = (...args) => {
-      const msg = args.join(" ");
-      if (msg.toLowerCase().includes("wallet") || msg.toLowerCase().includes("dapp-kit")) return;
-      originalConsoleError.apply(console, args);
-    };
-    return () => {
-      console.error = originalConsoleError;
-    };
-  }, []);
 
   return (
     <div>

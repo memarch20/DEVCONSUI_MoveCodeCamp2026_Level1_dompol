@@ -271,8 +271,9 @@ Copy the address shown and save it in Notepad.
 You need a small amount of real SUI to pay for deployment gas.
 
 1. Go to https://www.qr-code-generator.com/
-2. Paste your wallet address and generate a QR code
-3. Show the QR code to a mentor — they will send you the SUI tokens needed
+2. Click the **Text** tab, then paste your wallet address
+3. Click **Create QR Code** to generate it
+4. Show the QR code to a mentor — they will send you the SUI tokens needed
 
 ### Check Your Balance
 
@@ -290,21 +291,22 @@ Navigate to the contract folder:
 cd portfolio_contract
 ```
 
+> ⚠️ **Before building:** If a `Published.toml` file already exists inside the `portfolio_contract` folder (from a previous attempt), delete it first. Running `sui client publish` with a stale `Published.toml` will cause an "already published" error. In VS Code Explorer, right-click `Published.toml` → **Delete**.
+
 Build:
 
 ```powershell
 sui move build
 ```
 
-> If it seems to hang for more than 2 minutes, press `Ctrl + C` and run `sui move build` again.
+> This is a verification step to confirm the contract compiles. Only run it again if you see an error — `sui client publish` will handle the build automatically when you publish.
 
-If you see a build error mentioning `.move` cache, clean it first:
+If the build hangs for more than 2 minutes, press `Ctrl + C`. If you see a build error mentioning `.move` cache, clean it first, then rebuild:
 
 ```powershell
 Remove-Item -Recurse -Force "$env:USERPROFILE\.move"
+sui move build
 ```
-
-Then run `sui move build` again.
 
 ### Publish to Mainnet
 
@@ -376,7 +378,14 @@ sui client call `
   "Graphic Design,UI/UX Design,Project Management,Full Stack Development,Web & App Development"
 ```
 
-After the command completes, look for **Object ID** (also called `objectId`) in the output.
+After the command completes, scroll through the output and find the **Created Objects** section. Your **Object ID** is listed there:
+
+```
+Created Objects:
+ ┌─────────────────────────────────────────────
+ │ ObjectID: 0xYOUR_OBJECT_ID_HERE
+ ...
+```
 
 > ⚠️ **Save this Object ID in Notepad.** This is your portfolio's on-chain address.
 
@@ -517,6 +526,8 @@ Copy your Vercel URL (looks like `https://your-project.vercel.app`). Then:
 3. Paste your Vercel URL into the **Website** field
 4. Click **Save changes**
 
+> 💡 **Do not delete your forked repository.** Your GitHub repo is part of your portfolio — it shows your source code, commit history, and links to your live site. Keep it public.
+
 ---
 
 ## Step 10 — What's Next
@@ -597,3 +608,6 @@ All commands below are run in the **VS Code terminal** (except Step 1 which uses
 
 **Website shows old data after update**  
 → Re-run `git add .`, `git commit`, `git push`, then trigger a redeploy in Vercel.
+
+**`sui client publish` fails with "already published" or a `Published.toml` error**  
+→ A `Published.toml` file was left over from a previous attempt. In VS Code Explorer, find and delete `portfolio_contract/Published.toml`, then run `sui client publish` again.
